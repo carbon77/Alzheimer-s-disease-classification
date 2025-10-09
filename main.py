@@ -31,7 +31,7 @@ def create_prediction_bar_chart(predictions, class_names):
 
 
 def main():
-    st.title('🧠 Классификация болезни Альцгеймера по данным МРТ')
+    st.title('Классификация болезни Альцгеймера по данным МРТ')
 
     st.session_state.model = load_model()
     class_names = {
@@ -43,7 +43,7 @@ def main():
 
     col1, col2 = st.columns([1, 2])
     with col1:
-        st.subheader("📁 Загрузите изображение МРТ")
+        st.subheader("Загрузите изображение МРТ")
 
         uploaded_file = st.file_uploader(
             "Выберите изображение МРТ",
@@ -53,7 +53,7 @@ def main():
         )
 
         run_model_btn = st.button(
-            "🚀 Проанализировать изображение",
+            "Проанализировать изображение",
             disabled=st.session_state.input_image is None,
             use_container_width=True
         )
@@ -62,7 +62,7 @@ def main():
             st.image(uploaded_file, "Загруженное изображение", use_container_width=True)
 
     with col2:
-        st.subheader("📊 Результаты анализа")
+        st.subheader("Результаты анализа")
 
         if run_model_btn and uploaded_file:
             image = Image.open(uploaded_file).convert("RGB")
@@ -71,7 +71,7 @@ def main():
             with img_col:
                 st.image(image, caption="Изображение МРТ для анализа", use_container_width=True)
 
-            with st.spinner("🔬 Выполняется анализ..."):
+            with st.spinner("Выполняется анализ..."):
                 image_tensor = transform(image)
                 logits = st.session_state.model(image_tensor)
 
@@ -80,11 +80,11 @@ def main():
             predicted_class = torch.argmax(logits).item()
 
             with result_col:
-                st.write("### 🎯 Диагноз")
+                st.write("### Диагноз")
                 st.write(f"**Предсказанный тип:** {class_names.get(predicted_class, f'Class {predicted_class}')}")
                 st.write(f"**Уверенность:** {predictions[predicted_class]:.2f}%")
 
-                st.markdown("### 📈 Детальный анализ")
+                st.markdown("### Детальный анализ")
 
                 prediction_data = []
                 for i, confidence in enumerate(predictions):
