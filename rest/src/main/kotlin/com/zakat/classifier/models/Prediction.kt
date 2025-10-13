@@ -7,7 +7,8 @@ import java.util.UUID
 
 @Table(name = "predictions")
 data class Prediction(
-    var imageUrl: String = "",
+    var s3Key: String = "",
+    var logits: FloatArray = floatArrayOf(),
     var probabilities: FloatArray = floatArrayOf(),
     var predictedClass: Int? = null,
     var createdAt: Instant = Instant.now(),

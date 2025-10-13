@@ -3,9 +3,9 @@ package com.zakat.classifier.services
 import ai.onnxruntime.OnnxTensor
 import ai.onnxruntime.OrtEnvironment
 import ai.onnxruntime.OrtSession
-import com.zakat.classifier.models.PredictionResult
 import com.zakat.classifier.argmax
 import com.zakat.classifier.convertImageToTensor
+import com.zakat.classifier.models.PredictionResult
 import com.zakat.classifier.softmax
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -38,10 +38,13 @@ class ModelService {
             throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Answer is not tensor")
 
         val value = output.value as Array<FloatArray>
-        val probs = softmax(value[0])
+        val logits = value[0]
+        println("Logits: ${logits.contentToString()}")
+        val probs = softmax(logits)
         val predictedClass = argmax(probs)
 
         return PredictionResult(
+            logits = logits,
             probabilities = probs,
             predictedClass = predictedClass,
         )
