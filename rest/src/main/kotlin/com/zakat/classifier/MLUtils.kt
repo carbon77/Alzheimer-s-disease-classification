@@ -9,7 +9,7 @@ import java.nio.FloatBuffer
 import javax.imageio.ImageIO
 import kotlin.math.exp
 
-fun argmax(nums: List<Float>): Int {
+fun argmax(nums: FloatArray): Int {
     var argMax = 0
     for (i in nums.indices) {
         if (nums[i] > nums[argMax]) {
@@ -20,12 +20,12 @@ fun argmax(nums: List<Float>): Int {
     return argMax
 }
 
-fun softmax(logits: FloatArray): List<Float> {
+fun softmax(logits: FloatArray): FloatArray {
     val expSum = logits
         .map { logit -> exp(logit) }
         .sum()
 
-    return logits.map { logit -> exp(logit) / expSum }
+    return logits.map { logit -> exp(logit) / expSum }.toFloatArray()
 }
 
 fun convertImageToTensor(env: OrtEnvironment, image: MultipartFile): OnnxTensor =

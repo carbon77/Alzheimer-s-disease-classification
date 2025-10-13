@@ -1,29 +1,22 @@
-package com.zakat.classifier
+package com.zakat.classifier.services
 
 import ai.onnxruntime.OnnxTensor
 import ai.onnxruntime.OrtEnvironment
 import ai.onnxruntime.OrtSession
+import com.zakat.classifier.models.PredictionResult
+import com.zakat.classifier.argmax
+import com.zakat.classifier.convertImageToTensor
+import com.zakat.classifier.softmax
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.server.ResponseStatusException
-import java.awt.RenderingHints
-import java.awt.image.BufferedImage
-import java.nio.FloatBuffer
-import javax.imageio.ImageIO
 import kotlin.jvm.optionals.getOrNull
-import kotlin.math.exp
 
 @Service
-class ClassifierService {
+class ModelService {
     companion object {
         const val MODEL_PATH = "model.onnx"
-        val predictClasses = arrayOf(
-            "Mild Demented",
-            "Moderate Demented",
-            "Non Demented",
-            "Very Mild Demented",
-        )
     }
 
     fun runModel(image: MultipartFile): PredictionResult {
@@ -51,7 +44,6 @@ class ClassifierService {
         return PredictionResult(
             probabilities = probs,
             predictedClass = predictedClass,
-            predictedClassTitle = predictClasses[predictedClass],
         )
     }
 }
