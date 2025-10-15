@@ -2,9 +2,11 @@ package com.zakat.classifier.services
 
 import com.zakat.classifier.models.Prediction
 import com.zakat.classifier.models.repositories.PredictionRepository
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
+import org.springframework.web.server.ResponseStatusException
 import java.util.*
 import kotlin.jvm.optionals.getOrNull
 
@@ -40,7 +42,26 @@ class PredictionService(
         predictionRepository.delete(prediction)
     }
 
+    @Transactional(readOnly = true)
+    fun downloadImage(predictionId: UUID): DownloadImageResult {
+        val prediction = predictionRepository.findById(predictionId).getOrNull()
+        if (prediction == null || prediction.s3Key.isEmpty()) {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND)
+        }
+
+        val fileData = s3Service.getObject(prediction.s3Key)
+        return DownloadImageResult(
+            data = fileData,
+            filename = prediction.s3Key.split("__").last(),
+        )
+    }
+
     fun findAll(): Iterable<Prediction> {
         return predictionRepository.findAll()
     }
 }
+
+data class DownloadImageResult(
+    val data: ByteArray,
+    val filename: String,
+)
