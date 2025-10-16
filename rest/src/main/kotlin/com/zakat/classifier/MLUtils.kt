@@ -53,8 +53,8 @@ fun preprocessImage(image: BufferedImage): FloatArray {
         var b = (pixel and 0xFF) / 255.0f
 
         r = (r - .5f) / .5f
-        g = (r - .5f) / .5f
-        b = (r - .5f) / .5f
+        g = (g - .5f) / .5f
+        b = (b - .5f) / .5f
 
         val row = i / width
         val col = i % width
@@ -68,7 +68,8 @@ fun preprocessImage(image: BufferedImage): FloatArray {
 }
 
 fun resizeImage(image: BufferedImage, width: Int, height: Int): BufferedImage {
-    val g = image.createGraphics()
+    val resized = BufferedImage(width, height, image.type)
+    val g = resized.createGraphics()
     g.setRenderingHints(
         mapOf(
             RenderingHints.KEY_INTERPOLATION to RenderingHints.VALUE_INTERPOLATION_BILINEAR,
@@ -76,5 +77,5 @@ fun resizeImage(image: BufferedImage, width: Int, height: Int): BufferedImage {
     )
     g.drawImage(image, 0, 0, width, height, null)
     g.dispose()
-    return image
+    return resized
 }
