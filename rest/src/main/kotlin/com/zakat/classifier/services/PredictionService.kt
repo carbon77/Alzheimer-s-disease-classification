@@ -18,16 +18,19 @@ class PredictionService(
 ) {
 
     @Transactional
-    fun predictClass(image: MultipartFile): Prediction {
+    fun predictClass(image: MultipartFile, save: Boolean): Prediction {
         val result = modelService.runModel(image)
-        val s3Key = s3Service.putMultipartFile(image)
+        val s3Key = if (save) s3Service.putMultipartFile(image) else ""
         var prediction = Prediction(
             s3Key = s3Key,
             logits = result.logits,
             probabilities = result.probabilities,
             predictedClass = result.predictedClass,
         )
-        prediction = predictionRepository.save(prediction)
+
+        if (save) {
+            prediction = predictionRepository.save(prediction)
+        }
         return prediction
     }
 
